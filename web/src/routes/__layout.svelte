@@ -35,6 +35,7 @@
 <NoInstallPrompt />
 <NewVersionNotification />
 
+  <!-- DarkSwitch -->
 <NavBar
   links={[
     {href: url(''), title: 'Home'},
@@ -43,9 +44,6 @@
   ]}
 />
 
-<div class="absolute top-0 right-0 m-2">
-  <DarkSwitch />
-</div>
 
 <slot />
 <Notifications />

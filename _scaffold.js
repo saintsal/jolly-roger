@@ -5,6 +5,8 @@
 const { spawn, exec } = require('child_process');
 const fs = require('fs');
 
+
+const dir = 'web/src/routes/scaffold';
 const commandlineArgs = process.argv.slice(2);
 
 function wait(numSeconds) {
@@ -29,77 +31,75 @@ function execute(command) {
 
 
 async function performAction() {
-console.log(`waiting for web/src/lib/contracts.json...`);
-await execute(`wait-on web/src/lib/contracts.json`);
-fs.readFile(`web/src/lib/contracts.json`, 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  const contractsFile = JSON.parse(data);
+  console.log(`waiting for web/src/lib/contracts.json...`);
+  await execute(`wait-on web/src/lib/contracts.json`);
+  fs.readFile(`web/src/lib/contracts.json`, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const contractsFile = JSON.parse(data);
 
-  //console.log(contracts);
+    //console.log(contracts);
 
-  let indexFile = ''
+    let indexFile = ''
+    indexFile += '<main><ul>'
 
-  for (const [contractname, info] of Object.entries(contractsFile.contracts)) {
-    console.log('abi', contractname);
+    for (const [contractname, info] of Object.entries(contractsFile.contracts)) {
+      console.log('abi', contractname);
 
-    indexFile += `\n<li><a href="${contractname}">${contractname}</a></li>`
+      indexFile += `\n<li><a href="${contractname}">${contractname}</a></li>`
 
-    let svelteFile = ''
-    svelteFile += `<h1 class="font-bold">${contractname}</h1>`
-    svelteFile += `<div class="form-control w-full max-w-xs">`
+      let svelteFile = ''
+      svelteFile += `<main>`
+      svelteFile += `<h1>${contractname}</h1>`
 
-    info.abi.forEach(({ name, inputs, type }) => {
-      console.log(name, inputs, type)
-      if (type == 'function') {
-        inputs.forEach(input => {
-          console.log(input);
+      info.abi.forEach(({ name, inputs, type }) => {
+        console.log(name, inputs, type)
+        if (type == 'function') {
+          inputs.forEach(input => {
+            console.log(input);
 
-          svelteFile += `
-      <div class="grid  card bg-base-300 rounded-box ">
-     <label class="label">
-      <span class="label-text">${input.name}</span>
-    </label>`
-          switch (input.type) {
-            case 'string':
-              svelteFile += `\n<input type="text" name="${input.name}" placeholder="Enter ${input.name} here" class="input input-bordered w-full max-w-xs" />`
-              break;
-            case 'address':
-              svelteFile += `\n<input type="text" name="${input.name}" placeholder="0x0000000000000000000000000000000000000000" class="input input-bordered w-full max-w-xs" />`
-              svelteFile += `\n<label class="label"><span class="label-text-alt">Enter address with 0x</span></label>`
-              break;
-            case 'bytesd':
-              svelteFile += `\n<input type="text" name="${input.name}" placeholder="0123456789ABCDEF" class="input input-bordered w-full max-w-xs" />`
-              svelteFile += `\n<label class="label"><span class="label-text-alt">Bytes only</span></label>`
-              break;
-          }
-          svelteFile += `\n <button class="btn rounded-full btn-sm btn-outline">Make It So</button>`
-    svelteFile += `</div>`
-    svelteFile += `  <div class="divider"></div> `
-        })
-      }
-    })
-    svelteFile += `</div>`
-    
+            svelteFile += `
+            \n\n
+            <section>
+              <form>
+                <label for="${input.name}">${input.name} </label>`
 
+            switch (input.type) {
+              case 'string':
+                svelteFile += `\n<input type="text" name="${input.name}" placeholder="Enter ${input.name} here" class="input input-bordered w-full max-w-xs" />`
+                break;
+              case 'address':
+                svelteFile += `\n<input type="text" name="${input.name}" placeholder="0x0000000000000000000000000000000000000000" class="input input-bordered w-full max-w-xs" />`
+                svelteFile += `\n<label class="label"><span class="label-text-alt">Enter address with 0x</span></label>`
+                break;
+              case 'bytesd':
+                svelteFile += `\n<input type="text" name="${input.name}" placeholder="0123456789ABCDEF" class="input input-bordered w-full max-w-xs" />`
+                svelteFile += `\n<label class="label"><span class="label-text-alt">Bytes only</span></label>`
+                break;
+            }
+            svelteFile += `\n <button>Make It So</button>`
+            svelteFile += `</form></section>`
+          })
+        }
+      })
+
+      svelteFile += `</main>`
+      fs.writeFile(`${dir}/${contractname}.svelte`, svelteFile, err => {
+        if (err) {
+          console.error(err);
+        }
+      })
+    }
+
+    indexFile += `</ul></main>`
     //console.log(contractname, svelteFile )
 
-    const dir = 'web/src/routes/scaffold';
 
     fs.writeFile(`${dir}/index.svelte`, indexFile, err => {
     });
-    fs.writeFile(`${dir}/${contractname}.svelte`, svelteFile, err => {
-      if (err) {
-        console.error(err);
-      }
-    });
-
-  }
-
-
-})
+  })
 }
 
 

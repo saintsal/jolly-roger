@@ -11,14 +11,17 @@
 
 <!-- {JSON.stringify($navigating, null, '  ')} -->
 
-<ul class="flex m-1 border-b border-pink-600">
+  <nav><ul>
+
   {#each links as link}
-    <NavLink href={link.href} active={urlOfPath(link.href, $page.url.pathname)}>
+    <li>
+    <a href={link.href} active={urlOfPath(link.href, $page.url.pathname)}>
       {link.title}
-      <!-- ({link.href}) -->
-    </NavLink>
+      </a>
+    </li>
   {/each}
-</ul>
+
+  </ul></nav>
 
 {#if $navigating}
   <Loading />

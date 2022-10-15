@@ -1,1 +1,6 @@
 /* Write your global styles here, in PostCSS syntax */
+a b, a em, a i, a strong, button, input[type="submit"] {
+
+    padding: .4em .8em;
+    
+}
