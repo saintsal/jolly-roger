@@ -5,3 +5,4 @@
 node_modules
 *.code-workspace
 !*.code-workspace.default
+web/src/routes/scaffold

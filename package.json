@@ -39,6 +39,7 @@
     "subgraph:deploy": "node ./_scripts.js subgraph:deploy",
     "---------------------- web ----------------------": "build and serve the web app",
     "web:dev": "node ./_scripts.js web:dev",
+    "web:scaffold": "node ./_scaffold.js",
     "web:build": "node ./_scripts.js web:build",
     "build": "node ./_scripts.js web:build",
     "web:serve": "node ./_scripts.js web:serve",
